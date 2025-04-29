@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-const axios = require('axios');
-const {fetchPRDiff, formatPRSummary} = require("./diff_fetcher");
-const {responseSample} = require("./pr_creation_content");
-const {basicPrompt} = require("./prompSample");
-require('dotenv').config(); // To load environment variables
+import axios from 'axios';
+import { fetchPRDiff, formatPRSummary } from './diff_fetcher.js';
+import { responseSample } from './pr_creation_content.js';
+import { basicPrompt } from './prompSample.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Main function to make request to Claude's API
-async function askClaudeForSummary(summary) {
+async function askClaudeForSummary(summary: string): Promise<string> {
   let question = basicPrompt;
   question += `\n\nUse this PR content: \n\n${summary}`;
   // console.log(question);
@@ -32,20 +33,20 @@ async function askClaudeForSummary(summary) {
       }
     });
     return response.data.content[0].text;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error querying Claude API:', error.response?.data || error.message);
     throw error;
   }
 }
 
 // Function to get the question from command line arguments
-function getPromptFromArgs() {
+function getPromptFromArgs(): string {
   // Take all arguments after "node script.js"
   const args = process.argv.slice(2);
 
   // If no arguments provided, show help and exit
   if (args.length === 0) {
-    console.log('Usage: node script.js "Your question for Claude here"');
+    console.log('Usage: node dist/antropic-api.js "Your question for Claude here"');
     process.exit(1);
   }
 
@@ -53,7 +54,7 @@ function getPromptFromArgs() {
   return args.join(' ');
 }
 
-async function main() {
+async function main(): Promise<void> {
   try {
     const prSummary = await fetchPRDiff(responseSample);
     const formattedSummary = formatPRSummary(prSummary);

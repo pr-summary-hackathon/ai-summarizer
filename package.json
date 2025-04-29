@@ -2,8 +2,15 @@
   "name": "deepseek-api-node",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/antropic-api.js",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/antropic-api.js",
+    "dev": "ts-node src/antropic-api.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,5 +20,11 @@
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",
     "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "ts-node": "^10.9.2",
+    "@types/node": "^20.0.0",
+    "@types/axios": "^0.14.0"
   }
 }

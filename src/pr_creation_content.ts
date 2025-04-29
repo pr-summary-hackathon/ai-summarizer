@@ -1,4 +1,6 @@
-module.exports.responseSample = {
+import type { PRResponse } from './diff_fetcher.js';
+
+export const responseSample: PRResponse = {
   url: 'https://api.github.com/repos/pr-summary-hackathon/pr-summarizer/pulls/3',
   id: 2488535791,
   node_id: 'PR_kwDOOhmmz86UVArv',
