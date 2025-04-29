@@ -1,9 +1,16 @@
 #!/usr/bin/env node
 const axios = require('axios');
+const {fetchPRDiff, formatPRSummary} = require("./diff_fetcher");
+const {response, responseSample} = require("./pr_creation_content");
+const {basicPrompt} = require("./prompSample");
 require('dotenv').config(); // To load environment variables
 
 // Main function to make request to Claude's API
-async function askClaude(prompt) {
+async function askClaudeForSummary(summary) {
+  let question = basicPrompt;
+  question += `\n\nUse this PR content: \n\n${summary}`;
+  // console.log(question);
+  //return question;
   try {
     const response = await axios({
       method: 'post',
@@ -19,16 +26,16 @@ async function askClaude(prompt) {
         messages: [
           {
             role: 'user',
-            content: prompt
+            content: question
           }
         ]
       }
     });
 
     // Display the response
-    console.log('Claude\'s Response:');
-    console.log(response.data.content[0].text);
-    return response.data;
+    //console.log('Claude\'s Response:');
+    //console.log(response.data.content[0].text);
+    return response.data.content[0].text;
   } catch (error) {
     console.error('Error querying Claude API:', error.response?.data || error.message);
     throw error;
@@ -50,12 +57,16 @@ function getPromptFromArgs() {
   return args.join(' ');
 }
 
-// Example usage
 async function main() {
-  const prompt = getPromptFromArgs();
-
-  console.log(`Sending prompt: "${prompt}"`);
-  await askClaude(prompt);
+  try {
+    const prSummary = await fetchPRDiff(responseSample);
+    const formattedSummary = formatPRSummary(prSummary);
+    // console.log(formattedSummary);
+    const res = await askClaudeForSummary(formattedSummary);
+    console.log(res);
+  } catch (error) {
+    console.error('Failed to process PR:', error);
+  }
 }
 
 main().catch(console.error);
