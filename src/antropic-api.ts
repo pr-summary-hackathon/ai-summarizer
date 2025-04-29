@@ -5,6 +5,16 @@ import { basicPrompt } from './prompSample.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Define a type for the summary data payload for clarity
+interface SummaryData {
+  // prNumber: number; // Remove
+  // prTitle: string; // Remove
+  title: string; // Add combined title field
+  url: string;   // Add URL field
+  summary: string;
+  timestamp: string;
+}
+
 // Main function to make request to Claude's API
 async function askClaudeForSummary(summary: string): Promise<string> {
   let question = basicPrompt;
@@ -62,5 +72,48 @@ export async function summarizePr(prResponse: PRResponse): Promise<string> {
   } catch (error) {
     console.error('Failed to process PR:', error);
     return 'Failed to summarize PR';
+  }
+}
+
+// New function to send summary data to Slack
+export async function sendSummaryToSlack(summaryData: SummaryData): Promise<void> {
+  const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
+  if (!slackWebhookUrl) {
+    console.error('Slack webhook URL not found in environment variables (SLACK_WEBHOOK_URL).');
+    // Decide how to handle missing URL: throw error, log, or silently fail
+    // For now, we'll log and return to avoid crashing the main process
+    return; 
+  }
+
+  try {
+    // Use Slack's link formatting: <URL|Link Text>
+    const titleLink = `<${summaryData.url}|${summaryData.title}>`;
+    await axios.post(slackWebhookUrl, {
+      // Use blocks for better formatting (optional but recommended)
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `*New PR Summary: ${titleLink}*`
+          }
+        },
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `*Summary:*
+${summaryData.summary}`
+          }
+        }
+      ],
+      // Fallback text for notifications
+      text: `New PR Summary: ${titleLink} - Summary: ${summaryData.summary}`
+    });
+    console.log('Summary sent to Slack');
+  } catch (slackError: any) {
+    console.error('Failed to send summary to Slack:', slackError.response?.data || slackError.message);
+    // Decide how to handle Slack errors: throw, log, etc.
+    // For now, just logging the error
   }
 }

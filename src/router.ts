@@ -1,7 +1,11 @@
 import express, { Request, Response } from 'express';
-import { summarizePr } from './antropic-api.js';
+import { summarizePr, sendSummaryToSlack } from './antropic-api.js';
 import fs from 'fs/promises';
 import path from 'path';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Create Express application
 const app = express();
@@ -21,20 +25,31 @@ app.post('/github-webhook', async (req: Request, res: Response) => {
   const event = req.headers['x-github-event'];
   if (event === 'pull_request' && req.body.action === 'opened') {
     try {
-      const summary = await summarizePr(req.body.pull_request);
+      const pr = req.body.pull_request;
+      const summary = await summarizePr(pr);
+
+      // Create the combined title string
+      const combinedTitle = `#${pr.number}: ${pr.title}`;
+
       const summaryData = {
-        prNumber: req.body.pull_request.number,
-        prTitle: req.body.pull_request.title,
+        title: combinedTitle,
+        url: pr.html_url,
         summary,
         timestamp: new Date().toISOString()
       };
+
+      // Keep writing to file for debugging
       await fs.writeFile(
         path.join(process.cwd(), 'summary-response.json'),
         JSON.stringify(summaryData, null, 2)
       );
       console.log('PR Summary saved to summary-response.json');
+
+      // Call the function from antropic-api.ts to send summary to Slack
+      await sendSummaryToSlack(summaryData);
+
     } catch (error) {
-      console.error('Failed to summarize PR:', error);
+      console.error('Failed to process webhook event:', error);
     }
   }
   res.sendStatus(200);
