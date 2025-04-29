@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const axios = require('axios');
 const {fetchPRDiff, formatPRSummary} = require("./diff_fetcher");
-const {response, responseSample} = require("./pr_creation_content");
+const {responseSample} = require("./pr_creation_content");
 const {basicPrompt} = require("./prompSample");
 require('dotenv').config(); // To load environment variables
 
@@ -31,10 +31,6 @@ async function askClaudeForSummary(summary) {
         ]
       }
     });
-
-    // Display the response
-    //console.log('Claude\'s Response:');
-    //console.log(response.data.content[0].text);
     return response.data.content[0].text;
   } catch (error) {
     console.error('Error querying Claude API:', error.response?.data || error.message);
@@ -61,7 +57,6 @@ async function main() {
   try {
     const prSummary = await fetchPRDiff(responseSample);
     const formattedSummary = formatPRSummary(prSummary);
-    // console.log(formattedSummary);
     const res = await askClaudeForSummary(formattedSummary);
     console.log(res);
   } catch (error) {
