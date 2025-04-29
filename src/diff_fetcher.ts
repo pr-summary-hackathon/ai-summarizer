@@ -1,11 +1,103 @@
-const axios = require('axios');
+import axios from 'axios';
+
+export interface User {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  html_url: string;
+  followers_url: string;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
+  events_url: string;
+  received_events_url: string;
+  type: string;
+  user_view_type: string;
+  site_admin: boolean;
+}
+
+export interface PRResponse {
+  url: string;
+  id: number;
+  node_id: string;
+  html_url: string;
+  diff_url: string;
+  patch_url: string;
+  issue_url: string;
+  number: number;
+  state: string;
+  locked: boolean;
+  title: string;
+  user: User;
+  body?: string;
+  created_at: string;
+  updated_at: string;
+  closed_at?: string | null;
+  merged_at?: string | null;
+  merge_commit_sha?: string | null;
+  assignee?: any;
+  assignees?: any[];
+  requested_reviewers?: any[];
+  requested_teams?: any[];
+  labels?: any[];
+  milestone?: any;
+  draft?: boolean;
+  commits_url: string;
+  review_comments_url: string;
+  review_comment_url: string;
+  comments_url: string;
+  statuses_url: string;
+  head?: any;
+  base?: any;
+  _links?: any;
+  author_association?: string;
+  auto_merge?: any;
+  active_lock_reason?: any;
+  merged?: boolean;
+  mergeable?: boolean | null;
+  rebaseable?: boolean | null;
+  mergeable_state?: string;
+  merged_by?: any;
+  comments: number;
+  review_comments: number;
+  maintainer_can_modify?: boolean;
+  commits: number;
+  additions: number;
+  deletions: number;
+  changed_files: number;
+}
+
+export interface PRSummary {
+  title: string;
+  description: string;
+  url: string;
+  author: string;
+  status: {
+    state: string;
+    createdAt: string;
+    lastUpdated: string;
+  };
+  stats: {
+    filesChanged: number;
+    additions: number;
+    deletions: number;
+    totalChanges: number;
+  };
+  diffContent: string;
+}
 
 /**
  * Fetches and parses PR differences from a GitHub PR response
  * @param {Object} prResponse - The GitHub PR response object
  * @returns {Promise<Object>} A summary object containing PR details and diff
  */
-async function fetchPRDiff(prResponse) {
+export async function fetchPRDiff(prResponse: PRResponse): Promise<PRSummary> {
   try {
     // Extract important PR metadata
     const {
@@ -37,7 +129,7 @@ async function fetchPRDiff(prResponse) {
     const diffText = diffResponse.data; // With axios, we don't need to call .text()
 
     // Create a summary object with extended information
-    const prSummary = {
+    const prSummary: PRSummary = {
       title,
       description: body || 'No description provided',
       url: html_url,
@@ -57,7 +149,7 @@ async function fetchPRDiff(prResponse) {
     };
 
     return prSummary;
-  } catch (error) {
+  } catch (error: any) {
     // Axios specific error handling
     if (error.response) {
       // The request was made and the server responded with a status code
@@ -82,7 +174,7 @@ async function fetchPRDiff(prResponse) {
  * @param {Object} prSummary - The PR summary object
  * @returns {string} Formatted summary text
  */
-function formatPRSummary(prSummary) {
+export function formatPRSummary(prSummary: PRSummary): string {
   return `
 Pull Request Summary
 ===================
@@ -112,5 +204,3 @@ Diff Content
 ${prSummary.diffContent}
 `;
 }
-
-module.exports = { fetchPRDiff, formatPRSummary };

@@ -1,4 +1,4 @@
-const basicPrompt = `Analyze this Pull Request and provide ONLY:
+export const basicPrompt = `Analyze this Pull Request and provide ONLY:
 
 1. AUTHOR: [Name of the PR author]
 
@@ -7,5 +7,3 @@ const basicPrompt = `Analyze this Pull Request and provide ONLY:
 Example summary format: "This PR [adds/modifies/fixes] [specific component] by [specific change]. The changes are [scope assessment like 'minimal', 'focused on one component', 'across multiple systems']."
 
 Do not include any other information.`;
-
-module.exports = { basicPrompt };
