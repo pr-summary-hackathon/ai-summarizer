@@ -1,6 +1,8 @@
 {
-  "title": "#9: Test ferran 3",
-  "url": "https://github.com/pr-summary-hackathon/pr-summarizer/pull/9",
-  "summary": "1. AUTHOR: kazezz\n\n2. SUMMARY: This PR modifies the README.md file by adding two new lines of text (\"hey\" and \"quepasa\"). The changes are minimal, affecting only a single document with 2 additions and 1 deletion.",
-  "timestamp": "2025-04-29T14:28:13.565Z"
+  "title": "#13: Test santi 4",
+  "url": "https://github.com/pr-summary-hackathon/pr-summarizer/pull/13",
+  "authorName": "santicalvo",
+  "authorIconUrl": "https://avatars.githubusercontent.com/u/1442592?v=4",
+  "summary": "Failed to summarize PR",
+  "timestamp": "2025-04-29T15:00:14.741Z"
 }

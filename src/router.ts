@@ -34,6 +34,8 @@ app.post('/github-webhook', async (req: Request, res: Response) => {
       const summaryData = {
         title: combinedTitle,
         url: pr.html_url,
+        authorName: pr.user.login,
+        authorIconUrl: pr.user.avatar_url,
         summary,
         timestamp: new Date().toISOString()
       };
