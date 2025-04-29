@@ -84,6 +84,18 @@ export async function sendSummaryToSlack(summaryData: SummaryData): Promise<void
   }
 
   try {
+    // Extract the core summary text, removing potential numbering/prefixes
+    let coreSummary = summaryData.summary;
+    const summaryPrefix = "SUMMARY:";
+    const summaryIndex = coreSummary.toUpperCase().indexOf(summaryPrefix);
+    if (summaryIndex !== -1) {
+      coreSummary = coreSummary.substring(summaryIndex + summaryPrefix.length).trim();
+    }
+    // Optional: Remove potential leading numbering like "2. " if it exists after trimming
+    if (/^\d+\.\s/.test(coreSummary)) {
+      coreSummary = coreSummary.replace(/^\d+\.\s/, '');
+    }
+
     // Construct the Block Kit message payload
     const blocks = [
       // Header Section: PR Title and Link
@@ -127,7 +139,7 @@ export async function sendSummaryToSlack(summaryData: SummaryData): Promise<void
         text: {
           type: 'mrkdwn',
           text: `*📝 Summary:*
-${summaryData.summary}`
+${coreSummary}`
         }
       },
       // Divider
