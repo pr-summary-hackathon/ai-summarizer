@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/antropic-api.js",
-    "dev": "ts-node src/antropic-api.ts",
+    "dev": "tsx src/antropic-api.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "typescript": "^5.4.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.7.1",
     "@types/node": "^20.0.0",
     "@types/axios": "^0.14.0"
   }
