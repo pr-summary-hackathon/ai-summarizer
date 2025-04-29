@@ -2,15 +2,15 @@
   "name": "deepseek-api-node",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/antropic-api.js",
+  "main": "dist/router.js",
   "type": "module",
   "engines": {
     "node": ">=20.0.0"
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/antropic-api.js",
-    "dev": "tsx src/antropic-api.ts",
+    "start": "node dist/router.js",
+    "dev": "tsx src/router.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,12 +19,14 @@
   "dependencies": {
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",
+    "express": "^4.21.2",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "tsx": "^4.7.1",
+    "@types/axios": "^0.14.0",
+    "@types/express": "^4.17.21",
     "@types/node": "^20.0.0",
-    "@types/axios": "^0.14.0"
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.0"
   }
 }

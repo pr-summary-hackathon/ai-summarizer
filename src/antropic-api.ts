@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import axios from 'axios';
-import { fetchPRDiff, formatPRSummary } from './diff_fetcher.js';
-import { responseSample } from './pr_creation_content.js';
+import { fetchPRDiff, formatPRSummary, PRResponse } from './diff_fetcher.js';
 import { basicPrompt } from './prompSample.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -54,15 +53,14 @@ function getPromptFromArgs(): string {
   return args.join(' ');
 }
 
-async function main(): Promise<void> {
+export async function summarizePr(prResponse: PRResponse): Promise<string> {
   try {
-    const prSummary = await fetchPRDiff(responseSample);
+    const prSummary = await fetchPRDiff(prResponse);
     const formattedSummary = formatPRSummary(prSummary);
     const res = await askClaudeForSummary(formattedSummary);
-    console.log(res);
+    return res;
   } catch (error) {
     console.error('Failed to process PR:', error);
+    return 'Failed to summarize PR';
   }
 }
-
-main().catch(console.error);
